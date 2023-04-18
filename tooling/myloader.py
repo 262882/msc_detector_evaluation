@@ -4,6 +4,7 @@ Implement map-style dataset __getitem__() (as opposed to iterable-style __iter__
 
 import torch
 from pycocotools.coco import COCO
+from PIL import Image
 
 class CocoDetection(torch.utils.data.Dataset):
     """`MS Coco Detection <http://mscoco.org/dataset/#detections-challenge2016>`_ Dataset.
@@ -37,7 +38,7 @@ class CocoDetection(torch.utils.data.Dataset):
         ann_ids = coco.getAnnIds(imgIds=img_id)
         target = coco.loadAnns(ann_ids)
 
-        path = coco.loadImgs(img_id)[0]['file_name']
+        path = '/'+coco.loadImgs(img_id)[0]['file_name']
 
         img = Image.open(self.root + path).convert('RGB')
         if self.transform is not None:
