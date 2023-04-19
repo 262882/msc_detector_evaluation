@@ -25,7 +25,8 @@ dataset_dirs = [
     "../data/coco_validation_sml_01_FalseTrue_matchdrill/"  # Full
 ]
 
-model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+model_name = 'yolov5s'
+model = torch.hub.load('ultralytics/yolov5', model_name, pretrained=True)
 
 stats = {}
 for set_no, dir in enumerate(dataset_dirs):
@@ -88,11 +89,13 @@ for set_no, dir in enumerate(dataset_dirs):
     cocoEval.summarize()
 
     stat_sum = {
-        '(AP)@[IoU=0.50:0.95]_all': cocoEval.stats[0],
-        '(AP)@[IoU=0.50:0.95]_small': cocoEval.stats[3],
-        '(AP)@[IoU=0.50:0.95]_medium': cocoEval.stats[4],
+        'AP_{@[IoU=0.50:0.95]-all}': cocoEval.stats[0],
+        'AP_{@[IoU=0.50:0.95]-small}': cocoEval.stats[3],
+        'AP_{@[IoU=0.50:0.95]-medium}': cocoEval.stats[4],
     }
     stats[set_name] = stat_sum
 
+detector_res = {model_name:stats}
+
 with open(resFile, 'w') as out_file:
-    json.dump(stats, out_file)
+    json.dump(detector_res, out_file)
