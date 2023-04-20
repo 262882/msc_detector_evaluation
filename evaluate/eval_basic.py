@@ -8,7 +8,6 @@ import torch
 import json
 import numpy as np
 import cv2
-import torchvision.transforms.functional as F
 import os
 import sys
 from pycocotools.coco import COCO
@@ -63,10 +62,8 @@ for set_no, dir in enumerate(dataset_dirs):
                 
                 if (display):
                     # Display the resulting frame
-                    print(detect)
                     frame = cv2.rectangle(np.asarray(img), (int(detect[0]), int(detect[1])), (int(detect[2]), int(detect[3])),(0, 255, 0), 2)
                     cv2.imshow('Frame',frame)
-                    #cv2.waitKey(0)
 
                     # Press Q on keyboard to  exit
                     if cv2.waitKey(0) & 0xFF == ord('q'):
