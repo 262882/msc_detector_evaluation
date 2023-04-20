@@ -17,6 +17,8 @@ from pycocotools.cocoeval import COCOeval
 sys.path.append(os.path.join(sys.path[0], '../tooling/'))
 from myloader import CocoDetection
 
+display = True
+
 resFile = "../results/basic_stats.json"
 
 dataset_dirs = [
@@ -29,6 +31,7 @@ model_name = 'yolov5s'
 model = torch.hub.load('ultralytics/yolov5', model_name, pretrained=True)
 
 stats = {}
+x_loop_must_break = False
 for set_no, dir in enumerate(dataset_dirs):
     set_name = dir[dir[:-1].rfind('/')+1:-1]
     print('Evaluating dataset', set_no)
@@ -43,15 +46,12 @@ for set_no, dir in enumerate(dataset_dirs):
         # Prepare prediction 
         result = model(img)
         detections = result.xyxy[0]  # Batch size of 1
+        
         if len(detections)>0:
             for detect in detections:  # [x_min, y_min, x_max, y_max, score, class]
                 scores = detect[4].tolist()
                 
                 boxes = detect[0:4].type(torch.int64).tolist()
-                # from xyxy to xywh
-                boxes[2] = boxes[2]-boxes[0]
-                boxes[3] = boxes[3]-boxes[1]
-                
                 labels = detect[5].type(torch.int64).tolist()
                 
                 # Consider only ball detections
@@ -61,6 +61,22 @@ for set_no, dir in enumerate(dataset_dirs):
                 else:
                     continue
                 
+                if (display):
+                    # Display the resulting frame
+                    print(detect)
+                    frame = cv2.rectangle(np.asarray(img), (int(detect[0]), int(detect[1])), (int(detect[2]), int(detect[3])),(0, 255, 0), 2)
+                    cv2.imshow('Frame',frame)
+                    #cv2.waitKey(0)
+
+                    # Press Q on keyboard to  exit
+                    if cv2.waitKey(0) & 0xFF == ord('q'):
+                        x_loop_must_break = True
+                        break
+
+                # from xyxy to xywh
+                boxes[2] = boxes[2]-boxes[0]
+                boxes[3] = boxes[3]-boxes[1]
+                    
                 preds.append(
                     dict(
                         image_id = target[0]['image_id'],
@@ -69,6 +85,8 @@ for set_no, dir in enumerate(dataset_dirs):
                         score=round(scores,3),
                     )
                 )
+        if x_loop_must_break:
+            break
 
     workingFile = "./detection_cocoresults_set.json"
     with open(workingFile, 'w') as out_file:
@@ -94,6 +112,9 @@ for set_no, dir in enumerate(dataset_dirs):
         'AP_{@[IoU=0.50:0.95]-medium}': cocoEval.stats[4],
     }
     stats[set_name] = stat_sum
+
+    if x_loop_must_break:
+        break
 
 detector_res = {model_name:stats}
 
