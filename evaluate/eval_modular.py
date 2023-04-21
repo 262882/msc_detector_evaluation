@@ -100,7 +100,7 @@ for eval_model in evaluate_models:
 
         cocoGt = COCO(annotation)
         cocoDt = cocoGt.loadRes(workingFile)
-        #os.remove(workingFile)
+        os.remove(workingFile)
 
         cocoEval = COCOeval(cocoGt=cocoGt, cocoDt=cocoDt, iouType='bbox')
         cocoEval.params.imgIds  = dataset.ids  # Evaluate all images
