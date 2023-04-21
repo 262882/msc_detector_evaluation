@@ -16,7 +16,7 @@ from pycocotools.cocoeval import COCOeval
 sys.path.append(os.path.join(sys.path[0], '../tooling/'))
 from myloader import CocoDetection
 
-display = True
+display = False
 
 resFile = "../results/basic_stats.json"
 

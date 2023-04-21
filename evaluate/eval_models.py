@@ -4,9 +4,9 @@ Determine mAP scores for detector
 """
 
 from PIL import Image
-import torch
 import json
 import numpy as np
+import torch
 import cv2
 import os
 import sys
@@ -15,14 +15,14 @@ from pycocotools.cocoeval import COCOeval
 
 sys.path.append(os.path.join(sys.path[0], '../tooling/'))
 from myloader import CocoDetection
-from mymodels import nanodet
-from mynms import multiclass_nms
+from mymodels import nanodet, pretrained_yolov5s
 
-display = False
+display = True
 
 evaluate_models = [
-    ['../models/finedet_map93_416.onnx', 416],
-    ['../models/nanodet-plus-m-1.5x_416.onnx', 416],
+    ['../none/pretrained_yolov5s.none', pretrained_yolov5s, 0],
+    ['../models/finedet_map93_416.onnx', nanodet, 416],
+    ['../models/nanodet-plus-m-1.5x_416.onnx', nanodet, 416],
 ]
 
 dataset_dirs = [
@@ -35,7 +35,7 @@ for eval_model in evaluate_models:
         
     model_name = eval_model[0][eval_model[0].rfind('/')+1:-5]
     resFile = "../results/" + model_name + "_stats.json"
-    model = nanodet(eval_model[0], eval_model[1])
+    model = eval_model[1](eval_model[0], eval_model[2])
 
     stats = {}
     x_loop_must_break = False
@@ -55,8 +55,7 @@ for eval_model in evaluate_models:
             
             if len(detections)>0:
                 for detect in detections:  # [x_min, y_min, x_max, y_max, score, class]
-                    scores = detect[4].tolist()
-                    
+                    scores = detect[4]
                     boxes = detect[0:4]
                     labels = detect[5]
                     
@@ -69,7 +68,6 @@ for eval_model in evaluate_models:
                     
                     if (display):
                         # Display the resulting frame
-                        print(detect)
                         frame = cv2.rectangle(np.asarray(img), (int(detect[0]), int(detect[1])), (int(detect[2]), int(detect[3])),(0, 255, 0), 2)
                         frame = cv2.circle(np.asarray(frame), (int(detect[-2]), int(detect[-1])),5,(255, 0, 0), 2)
                         cv2.imshow('Frame',frame)
@@ -88,7 +86,7 @@ for eval_model in evaluate_models:
                             image_id = id,
                             category_id=labels,
                             bbox=boxes,
-                            score=round(scores,3),
+                            score=float(scores),
                         )
                     )
             if x_loop_must_break:

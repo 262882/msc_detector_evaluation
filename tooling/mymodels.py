@@ -5,18 +5,19 @@ Vision models
 import onnxruntime as rt
 import cv2
 import numpy as np
+import torch
+
+class pretrained_yolov5s():
+
+    def __init__(self, dir, res):
+        self.model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+
+    def forward(self, img):
+        result = self.model(img)
+        detections = result.xyxy[0]  # Assume batch size of 1
+        return (detections.cpu()).tolist()
 
 class nanodet():
-    """`MS Coco Detection <http://mscoco.org/dataset/#detections-challenge2016>`_ Dataset.
-
-    Args:
-        root (string): Root directory where images are downloaded to.
-        annFile (string): Path to json annotation file.
-        transform (callable, optional): A function/transform that  takes in an PIL image
-            and returns a transformed version. E.g, ``transforms.ToTensor``
-        target_transform (callable, optional): A function/transform that takes in the
-            target and transforms it.
-    """
 
     def __init__(self, dir, res):
         providers = ['CPUExecutionProvider']
