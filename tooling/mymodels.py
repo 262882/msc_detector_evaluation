@@ -95,7 +95,7 @@ class nanodet():
         x = (ind%cell_count)*norm_img.shape[0]/cell_count
         y = (ind//cell_count)*norm_img.shape[0]/cell_count
 
-        preds.append([x-l, y-t, x+r, y+b, layer_output[int(ind), coco_ind], coco_ind, x, y])
+        preds.append([x-l, y-t, x+r, y+b, layer_output[int(ind), coco_ind], coco_ind])
 
         """
         for ind in max_inds:

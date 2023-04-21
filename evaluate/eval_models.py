@@ -69,7 +69,6 @@ for eval_model in evaluate_models:
                     if (display):
                         # Display the resulting frame
                         frame = cv2.rectangle(np.asarray(img), (int(detect[0]), int(detect[1])), (int(detect[2]), int(detect[3])),(0, 255, 0), 2)
-                        frame = cv2.circle(np.asarray(frame), (int(detect[-2]), int(detect[-1])),5,(255, 0, 0), 2)
                         cv2.imshow('Frame',frame)
 
                         # Press Q on keyboard to  exit
