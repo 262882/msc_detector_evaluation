@@ -74,23 +74,34 @@ class nanodet():
     def _post_process(self, predict_results):
         preds = []
         class_ind = 32
+        score_thr=0.05
         PROJECT = np.arange(8)
 
         class_scores = predict_results[:,:self.num_classes]
         bbox_predicts = predict_results[:,self.num_classes:]
-        max_ind = int(np.argmax(class_scores[:,class_ind]))  # Assume only one instance
 
-        x, y = self.grid_points[max_ind]
-        stride = self.grid_strides[max_ind]
+        max_inds = np.argmax(class_scores[:,class_ind])  # Assume only one instance
+        if class_scores[max_inds, class_ind] > score_thr:
+            pred_inds = [[int(max_inds)]]
+        else:
+            pred_inds = []
+        #pred_inds = np.argwhere(class_scores[:, class_ind] > score_thr)  # Process multiple instances
 
-        bbox_max = bbox_predicts[max_ind]
-        bbox_max = bbox_max.reshape(-1, 8)
-        bbox_max = self._softmax(bbox_max, axis=1)
-        bbox_max = np.dot(bbox_max, PROJECT).reshape(-1, 4)
-        bbox_max *= stride
-        l,t,r,b = bbox_max[0]
+        if len(pred_inds)>0:
+            for ind in pred_inds:
+                ind = ind[0]
+                x, y = self.grid_points[ind]
+                stride = self.grid_strides[ind]
 
-        preds.append([x-l, y-t, x+r, y+b, class_scores[max_ind, class_ind], class_ind])
+                bbox_max = bbox_predicts[ind]
+                bbox_max = bbox_max.reshape(-1, 8)
+                bbox_max = self._softmax(bbox_max, axis=1)
+                bbox_max = np.dot(bbox_max, PROJECT).reshape(-1, 4)
+                bbox_max *= stride
+                l,t,r,b = bbox_max[0]
+
+                preds.append([x-l, y-t, x+r, y+b, class_scores[ind, class_ind], class_ind])
+
         return preds
 
     def forward(self, img):
