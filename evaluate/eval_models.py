@@ -15,13 +15,14 @@ from pycocotools.cocoeval import COCOeval
 
 sys.path.append(os.path.join(sys.path[0], '../tooling/'))
 from myloader import CocoDetection
-from mymodels import nanodet, pretrained_yolov5s
+from mymodels import nanodet, pretrained_yolov5s, cascade_classifier
 
-display = False
+display = True
 
 evaluate_models = [
     #['../none/pretrained_yolov5s.none', pretrained_yolov5s, 0],
-    ['../models/finedet_map93_416.onnx', nanodet, 416],
+    #['../models/finedet_map93_416.onnx', nanodet, 416],
+    ['../models/ballcascade_8_0.25.xml', cascade_classifier, 0],
 ]
 
 dataset_dirs = [
@@ -32,7 +33,7 @@ dataset_dirs = [
 
 for eval_model in evaluate_models:
         
-    model_name = eval_model[0][eval_model[0].rfind('/')+1:-5]
+    model_name = eval_model[0][eval_model[0].rfind('/')+1:eval_model[0].rfind('.')]
     resFile = "../results/" + model_name + "_stats.json"
     model = eval_model[1](eval_model[0], eval_model[2])
 

@@ -16,6 +16,38 @@ class pretrained_yolov5s():
         result = self.model(img)
         detections = result.xyxy[0]  # Assume batch size of 1
         return (detections.cpu()).tolist()
+    
+class cascade_classifier():
+
+    def __init__(self, dir, res):
+        self.model = cv2.CascadeClassifier(dir)
+
+    def _preprocess(self, img):
+        grey_img = cv2.cvtColor(np.asarray(img), cv2.COLOR_BGR2GRAY)
+        ddepth = cv2.CV_16S
+        kernel_size = 3
+        edge_img = cv2.Laplacian(grey_img, ddepth, ksize=kernel_size)
+        final = np.array((edge_img>100)*255, dtype='uint8')
+
+        return final
+
+    def _post_process(self, bboxes):
+        preds = []
+        for (x, y, w, h) in bboxes:
+            preds.append([float(x), float(y), float(x+w), float(y+h), float(1), int(32)])
+
+        return preds
+
+    def forward(self, img):
+        scale_factor = 1.05  # how much the image size is reduced at each image scale
+        min_neighbours = 1 # how many neighbors each candidate rectangle should have to retain it
+        
+        img = self._preprocess(img)
+
+        output = self.model.detectMultiScale(img, scale_factor, min_neighbours)
+        detections_pre = self._post_process(output)
+            
+        return detections_pre
 
 class nanodet():
 
