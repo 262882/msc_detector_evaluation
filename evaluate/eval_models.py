@@ -15,20 +15,23 @@ from pycocotools.cocoeval import COCOeval
 
 sys.path.append(os.path.join(sys.path[0], '../tooling/'))
 from myloader import CocoDetection
-from mymodels import nanodet, pretrained_yolov5s, cascade_classifier
+from mymodels import nanodet, pretrained_yolov5s, cascade_classifier, yolox
 
 display = True
 
 evaluate_models = [
-    #['../none/pretrained_yolov5s.none', pretrained_yolov5s, 0],
+    ['../none/pretrained_yolov5s.none', pretrained_yolov5s, 0],
+    ['../models/nanodet-plus-m_416.onnx', nanodet, 416],
+    #['../models/yolox_nano.onnx', yolox, 416],
     #['../models/finedet_map93_416.onnx', nanodet, 416],
-    ['../models/ballcascade_8_0.25.xml', cascade_classifier, 0],
+    #['../models/ballcascade_8_0.25.xml', cascade_classifier, 0],
+
 ]
 
 dataset_dirs = [
     "../data/coco_validation_sml_01_False_drill/",  # No match, no occl
     "../data/coco_validation_sml_01_False_matchdrill/",  # No occl
-    "../data/coco_validation_sml_01_FalseTrue_matchdrill/"  # Full
+    "../data/coco_validation_sml_01_FalseTrue_matchdrill/",  # Full
 ]
 
 for eval_model in evaluate_models:
@@ -88,6 +91,17 @@ for eval_model in evaluate_models:
                             score=float(scores),
                         )
                     )
+            else:
+                if (display):
+                    # Display the resulting frame
+                    frame = np.asarray(img)
+                    cv2.imshow('Frame',frame)
+
+                    # Press Q on keyboard to  exit
+                    if cv2.waitKey(0) & 0xFF == ord('q'):
+                        x_loop_must_break = True
+                        break
+                            
             if x_loop_must_break:
                 break
                 
