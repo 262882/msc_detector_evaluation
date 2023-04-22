@@ -53,8 +53,8 @@ class nanodet():
         xv = xv.flatten()
         yv = yv.flatten()
 
-        cx = xv + 1
-        cy = yv + 1
+        cx = xv #  + 0.5 * (stride - 1)
+        cy = yv #  + 0.5 * (stride - 1)
 
         return np.stack((cx, cy), axis=-1)
 
@@ -74,13 +74,14 @@ class nanodet():
     def _post_process(self, predict_results):
         preds = []
         class_ind = 32
+        PROJECT = np.arange(8)
+
         class_scores = predict_results[:,:self.num_classes]
         bbox_predicts = predict_results[:,self.num_classes:]
-        max_ind = int(np.argmax(class_scores[:,class_ind]))
+        max_ind = int(np.argmax(class_scores[:,class_ind]))  # Assume only one instance
 
         x, y = self.grid_points[max_ind]
         stride = self.grid_strides[max_ind]
-        PROJECT = np.arange(8)
 
         bbox_max = bbox_predicts[max_ind]
         bbox_max = bbox_max.reshape(-1, 8)

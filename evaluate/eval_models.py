@@ -17,12 +17,11 @@ sys.path.append(os.path.join(sys.path[0], '../tooling/'))
 from myloader import CocoDetection
 from mymodels import nanodet, pretrained_yolov5s
 
-display = True
+display = False
 
 evaluate_models = [
-    ['../none/pretrained_yolov5s.none', pretrained_yolov5s, 0],
+    #['../none/pretrained_yolov5s.none', pretrained_yolov5s, 0],
     ['../models/finedet_map93_416.onnx', nanodet, 416],
-    ['../models/nanodet-plus-m-1.5x_416.onnx', nanodet, 416],
 ]
 
 dataset_dirs = [
@@ -61,7 +60,7 @@ for eval_model in evaluate_models:
                     
                     # Consider only ball detections
                     if labels == 32:
-                        labels = 37  # Convert prediction to coco
+                        labels = 37  # Map prediction to coco
                         pass
                     else:
                         continue
