@@ -52,9 +52,11 @@ for eval_model in evaluate_models:
         preds = []
         for idx, id in enumerate(dataset.ids):
             img, target = dataset[idx]
+            frame = np.asarray(img)
 
             # Prepare prediction 
             detections = model.forward(img)
+            
             
             if len(detections)>0:
                 for detect in detections:  # [x_min, y_min, x_max, y_max, score, class]
@@ -65,19 +67,13 @@ for eval_model in evaluate_models:
                     # Consider only ball detections
                     if labels == 32:
                         labels = 37  # Map prediction to coco
+
+                        if (display):
+                            frame = cv2.rectangle(frame, (int(boxes[0]), int(boxes[1])), (int(boxes[2]), int(boxes[3])),(0, 255, 0), 2)
                         pass
+
                     else:
                         continue
-                    
-                    if (display):
-                        # Display the resulting frame
-                        frame = cv2.rectangle(np.asarray(img), (int(boxes[0]), int(boxes[1])), (int(boxes[2]), int(boxes[3])),(0, 255, 0), 2)
-                        cv2.imshow('Frame',frame)
-
-                        # Press Q on keyboard to  exit
-                        if cv2.waitKey(0) & 0xFF == ord('q'):
-                            x_loop_must_break = True
-                            break
 
                     # from xyxy to xywh
                     boxes[2] = boxes[2]-boxes[0]
@@ -91,19 +87,18 @@ for eval_model in evaluate_models:
                             score=float(scores),
                         )
                     )
-            else:
-                if (display):
-                    # Display the resulting frame
-                    frame = np.asarray(img)
-                    cv2.imshow('Frame',frame)
 
-                    # Press Q on keyboard to  exit
-                    if cv2.waitKey(0) & 0xFF == ord('q'):
-                        x_loop_must_break = True
-                        break
+            if (display):
+                # Display the resulting frame
+                cv2.imshow('Frame',frame)
+
+                # Press Q on keyboard to  exit
+                if cv2.waitKey(0) & 0xFF == ord('q'):
+                    x_loop_must_break = True
+                    break
                             
-            if x_loop_must_break:
-                break
+        if x_loop_must_break:
+            break
                 
         workingFile = "./detection_cocoresults_set.json"
         with open(workingFile, 'w') as out_file:
@@ -129,9 +124,6 @@ for eval_model in evaluate_models:
             'AP_{@[IoU=0.50:0.95]-medium}': cocoEval.stats[4],
         }
         stats[set_name] = stat_sum
-
-        if x_loop_must_break:
-            break
 
     detector_res = {model_name:stats}
 
