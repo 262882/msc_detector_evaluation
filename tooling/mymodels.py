@@ -230,8 +230,7 @@ class yolox():
                 pred_inds = [[int(top_ind_x)]]
 
         #pred_inds = np.argwhere(class_scores[:, class_ind] > score_thr)  # Process multiple instances
-
-        print(pred_inds)
+        
         if len(pred_inds)>0:
             for ind in pred_inds:
                 ind = ind[0]
@@ -241,14 +240,11 @@ class yolox():
                 l_w, l_h = stride*np.exp(np.array([p_w, p_h]))
                 l_x, l_y = stride*np.array([p_x,p_y])
 
-                print(x, y, l_x, l_y, l_w, l_h,bbox_score[ind], np.argmax(class_scores[ind]))
-
                 preds.append([x+l_x-l_w//2, y+l_y-l_h//2, x+l_x+l_w//2, y+l_y+l_h//2, bbox_score[ind], np.argmax(class_scores[ind])])
 
         return preds
 
     def forward(self, img):
-        print("forward")
         preds = []
         norm_img = np.asarray(img)
         inp = {self.inname[0]:self._pre_process(norm_img)}

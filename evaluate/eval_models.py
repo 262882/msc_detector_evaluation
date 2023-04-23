@@ -17,14 +17,14 @@ sys.path.append(os.path.join(sys.path[0], '../tooling/'))
 from myloader import CocoDetection
 from mymodels import nanodet, pretrained_yolov5s, cascade_classifier, yolox
 
-display = True
+display = False
 
 evaluate_models = [
     ['../none/pretrained_yolov5s.none', pretrained_yolov5s, 0],
     ['../models/nanodet-plus-m_416.onnx', nanodet, 416],
-    #['../models/yolox_nano.onnx', yolox, 416],
-    #['../models/finedet_map93_416.onnx', nanodet, 416],
-    #['../models/ballcascade_8_0.25.xml', cascade_classifier, 0],
+    ['../models/yolox_nano.onnx', yolox, 416],
+    ['../models/finedet_map93_416.onnx', nanodet, 416],
+    ['../models/ballcascade_8_0.25.xml', cascade_classifier, 0],
 
 ]
 
@@ -56,7 +56,6 @@ for eval_model in evaluate_models:
 
             # Prepare prediction 
             detections = model.forward(img)
-            
             
             if len(detections)>0:
                 for detect in detections:  # [x_min, y_min, x_max, y_max, score, class]
