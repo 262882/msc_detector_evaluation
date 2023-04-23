@@ -209,7 +209,6 @@ class yolox():
 
 
     def _post_process(self, predict_results):
-        print("process")
         preds = []
         class_ind = 32
         score_thr=0.05
@@ -220,11 +219,16 @@ class yolox():
         bbox_score = predict_results[:,5]
 
         max_inds = np.argmax(bbox_score)  # Assume only one instance
-        print(max_inds)
-        if bbox_score[max_inds] > score_thr:
-            pred_inds = [[int(max_inds)]]
-        else:
-            pred_inds = []
+        top_classes = np.argmax(class_scores, axis=1)
+        top_class_x = np.where(top_classes==32)[0]
+
+        pred_inds = []
+        if top_class_x.size > 0:
+            top_ind_x = top_class_x[np.argmax(bbox_score[top_class_x])]
+
+            if bbox_score[top_ind_x] > score_thr:
+                pred_inds = [[int(top_ind_x)]]
+
         #pred_inds = np.argwhere(class_scores[:, class_ind] > score_thr)  # Process multiple instances
 
         print(pred_inds)
