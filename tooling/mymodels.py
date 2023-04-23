@@ -191,8 +191,8 @@ class yolox():
         xv = xv.flatten()
         yv = yv.flatten()
 
-        cx = xv #  + 0.5 * (stride - 1)
-        cy = yv #  + 0.5 * (stride - 1)
+        cx = xv #+ 0.5 * (stride - 1)
+        cy = yv #+ 0.5 * (stride - 1)
 
         return np.stack((cx, cy), axis=-1)
     
@@ -239,7 +239,7 @@ class yolox():
 
                 print(x, y, l_x, l_y, l_w, l_h,bbox_score[ind], np.argmax(class_scores[ind]))
 
-                preds.append([x-l_w//2, y-l_h//2, x+l_w//2, y+l_h//2, bbox_score[ind], np.argmax(class_scores[ind])])
+                preds.append([x+l_x-l_w//2, y+l_y-l_h//2, x+l_x+l_w//2, y+l_y+l_h//2, bbox_score[ind], np.argmax(class_scores[ind])])
 
         return preds
 
@@ -249,8 +249,6 @@ class yolox():
         norm_img = np.asarray(img)
         inp = {self.inname[0]:self._pre_process(norm_img)}
         layer_output = self.session.run(self.outname, inp)[0][0]  
-
-        print(layer_output.shape)
 
         detections_pre = self._post_process(layer_output)   
         for detection in detections_pre:
