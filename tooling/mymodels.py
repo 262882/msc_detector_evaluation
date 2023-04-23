@@ -31,10 +31,14 @@ class cascade_classifier():
 
         return final
 
-    def _post_process(self, bboxes):
+    def _post_process(self, input):
         preds = []
-        for (x, y, w, h) in bboxes:
-            preds.append([float(x), float(y), float(x+w), float(y+h), float(1), int(32)])
+        bboxes, rejectLevels, levelWeights = input
+        if len(bboxes)>0:
+            ind_max = np.argmax(levelWeights)
+            bboxes = [bboxes[ind_max]]
+            for (x, y, w, h) in bboxes:
+                preds.append([float(x), float(y), float(x+w), float(y+h), float(1), int(32)])
 
         return preds
 
@@ -44,7 +48,11 @@ class cascade_classifier():
         
         img = self._preprocess(img)
 
-        output = self.model.detectMultiScale(img, scale_factor, min_neighbours)
+        output = self.model.detectMultiScale3(img, 
+                                              scale_factor, 
+                                              min_neighbours,     
+                                              outputRejectLevels = True
+                                              )
         detections_pre = self._post_process(output)
             
         return detections_pre
@@ -230,7 +238,7 @@ class yolox():
                 pred_inds = [[int(top_ind_x)]]
 
         #pred_inds = np.argwhere(class_scores[:, class_ind] > score_thr)  # Process multiple instances
-        
+
         if len(pred_inds)>0:
             for ind in pred_inds:
                 ind = ind[0]
