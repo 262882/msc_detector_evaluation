@@ -17,7 +17,7 @@ sys.path.append(os.path.join(sys.path[0], '../tooling/'))
 from myloader import CocoDetection
 from mymodels import nanodet, pretrained_yolov5s, cascade_classifier, yolox
 
-display = False
+display = True
 
 evaluate_models = [
     ['../none/pretrained_yolov5s.none', pretrained_yolov5s, 0],
@@ -51,7 +51,7 @@ for eval_model in evaluate_models:
         preds = []
         for idx, id in enumerate(dataset.ids):
             img, target = dataset[idx]
-            frame = np.asarray(img)
+            frame = cv2.cvtColor(np.asarray(img), cv2.COLOR_BGR2RGB)
 
             # Prepare prediction 
             detections = model.forward(img)
