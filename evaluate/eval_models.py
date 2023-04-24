@@ -25,7 +25,6 @@ evaluate_models = [
     ['../models/yolox_nano.onnx', yolox, 416],
     ['../models/finedet_map93_416.onnx', nanodet, 416],
     ['../models/ballcascade_8_0.25.xml', cascade_classifier, 0],
-
 ]
 
 dataset_dirs = [

@@ -43,14 +43,14 @@ class cascade_classifier():
         return preds
 
     def forward(self, img):
-        scale_factor = 1.05  # how much the image size is reduced at each image scale
+        scale_factor = 1.1  # how much the image size is reduced at each image scale
         min_neighbours = 1 # how many neighbors each candidate rectangle should have to retain it
         
         img = self._preprocess(img)
 
         output = self.model.detectMultiScale3(img, 
                                               scale_factor, 
-                                              min_neighbours,     
+                                              min_neighbours,
                                               outputRejectLevels = True
                                               )
         detections_pre = self._post_process(output)
