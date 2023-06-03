@@ -17,7 +17,7 @@ sys.path.append(os.path.join(sys.path[0], '../tooling/'))
 from myloader import CocoDetection
 from mymodels import nanodet, pretrained_yolov5s, cascade_classifier, yolox
 
-display = True
+display = False
 
 evaluate_models = [
     ['../none/pretrained_yolov5s.none', pretrained_yolov5s, 0],
@@ -28,9 +28,9 @@ evaluate_models = [
 ]
 
 dataset_dirs = [
-    "../data/coco_validation_sml_01_False_drill/",  # No match, no occl
-    "../data/coco_validation_sml_01_False_matchdrill/",  # No occl
-    "../data/coco_validation_sml_01_FalseTrue_matchdrill/",  # Full
+    "../data/coco_test_sml_01_False_drill/",  # No match, no occl
+    "../data/coco_test_sml_01_False_matchdrill/",  # No occl
+    "../data/coco_test_sml_01_FalseTrue_matchdrill/",  # Full
 ]
 
 for eval_model in evaluate_models:
