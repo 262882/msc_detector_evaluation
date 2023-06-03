@@ -2,6 +2,7 @@
 Evaluation tools
 """
 
+import time
 import os
 import sys
 import json
@@ -13,7 +14,10 @@ from pycocotools.cocoeval import COCOeval
 sys.path.append(os.path.join(sys.path[0], '../tooling/'))
 from myloader import CocoDetection
 
-def myevaluatemodels(evaluate_models, dataset_dirs, result_dir, display=False, verbose=False):
+def myevaluatemodels(evaluate_models, dataset_dirs, result_dir, display=False, verbose=False, timeout=3):
+
+    skip_model = False
+
     for eval_model in evaluate_models:
             
         model_name = eval_model[0][eval_model[0].rfind('/')+1:eval_model[0].rfind('.')]
@@ -22,7 +26,12 @@ def myevaluatemodels(evaluate_models, dataset_dirs, result_dir, display=False, v
 
         stats = {}
         x_loop_must_break = False
-        for set_no, dir in enumerate(dataset_dirs):
+        skip_model = False
+        for set_no, dir in enumerate(dataset_dirs):     
+
+            if skip_model:
+                break  
+
             set_name = dir[dir[:-1].rfind('/')+1:-1]
             print('Evaluating', model_name, "using dataset", set_no)
             img_dir = os.path.abspath(dir)
@@ -30,10 +39,19 @@ def myevaluatemodels(evaluate_models, dataset_dirs, result_dir, display=False, v
             dataset = CocoDetection(root=img_dir, annFile=annotation)
 
             preds = []
+            last_time = time.perf_counter()
+
             for idx, id in enumerate(dataset.ids):
 
                 if verbose:
                     print(model_name, "dataset:", set_no, "- Processing image:", idx, "of", len(dataset.ids))
+
+                if (time.perf_counter() - last_time) > timeout:
+                    print("Model timeout - Skipped")
+                    last_time = time.perf_counter()
+                    skip_model = True
+                    break   
+                last_time = time.perf_counter()      
 
                 img, target = dataset[idx]
                 frame = cv2.cvtColor(np.asarray(img), cv2.COLOR_BGR2RGB)
