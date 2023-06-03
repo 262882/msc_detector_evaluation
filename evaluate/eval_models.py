@@ -20,11 +20,11 @@ from mymodels import nanodet, pretrained_yolov5s, cascade_classifier, yolox
 display = False
 
 evaluate_models = [
-    ['../none/pretrained_yolov5s.none', pretrained_yolov5s, 0],
-    ['../models/nanodet-plus-m_416.onnx', nanodet, 416],
-    ['../models/yolox_nano.onnx', yolox, 416],
-    ['../models/finedet_map93_416.onnx', nanodet, 416],
-    ['../models/ballcascade_8_0.25.xml', cascade_classifier, 0],
+    ['../none/pretrained_yolov5s.none', pretrained_yolov5s, {}],
+    ['../models/nanodet-plus-m_416.onnx', nanodet, {"resolution":416, "num_classes":80}],
+    ['../models/yolox_nano.onnx', yolox, {"resolution":416, "num_classes":80}],
+    ['../models/finedet_map93_416.onnx', nanodet, {"resolution":416, "num_classes":80}],
+    ['../models/ballcascade_8_0.25.xml', cascade_classifier, {"scale_factor":1.1, "min_neighbours":1}],
 ]
 
 dataset_dirs = [

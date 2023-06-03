@@ -9,7 +9,7 @@ import torch
 
 class pretrained_yolov5s():
 
-    def __init__(self, dir, res):
+    def __init__(self, dir, settings):
         self.model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
 
     def forward(self, img):
@@ -19,8 +19,10 @@ class pretrained_yolov5s():
     
 class cascade_classifier():
 
-    def __init__(self, dir, res):
+    def __init__(self, dir, settings):
         self.model = cv2.CascadeClassifier(dir)
+        self.scale_factor = settings["scale_factor"]  # how much the image size is reduced at each image scale
+        self.min_neighbours = settings["min_neighbours"]  # how many neighbors each candidate rectangle should have to retain it
 
     def _preprocess(self, img):
         grey_img = cv2.cvtColor(np.asarray(img), cv2.COLOR_BGR2GRAY)
@@ -43,14 +45,11 @@ class cascade_classifier():
         return preds
 
     def forward(self, img):
-        scale_factor = 1.1  # how much the image size is reduced at each image scale
-        min_neighbours = 1 # how many neighbors each candidate rectangle should have to retain it
         
         img = self._preprocess(img)
-
         output = self.model.detectMultiScale3(img, 
-                                              scale_factor, 
-                                              min_neighbours,
+                                              self.scale_factor, 
+                                              self.min_neighbours,
                                               outputRejectLevels = True
                                               )
         detections_pre = self._post_process(output)
@@ -59,7 +58,7 @@ class cascade_classifier():
 
 class nanodet():
 
-    def __init__(self, dir, res, num_classes=80):
+    def __init__(self, dir, settings):
         providers = ['CPUExecutionProvider']
         sess_options = rt.SessionOptions()  # https://onnxruntime.ai/docs/performance/tune-performance.html
         sess_options.intra_op_num_threads = 1
@@ -68,16 +67,16 @@ class nanodet():
         self.session = rt.InferenceSession(dir, sess_options=sess_options, providers=providers)
         self.outname = [i.name for i in self.session.get_outputs()] 
         self.inname = [i.name for i in self.session.get_inputs()]
-        self.mod_res = res
-        self.num_classes = num_classes
+        self.mod_res = settings["resolution"]
+        self.num_classes = settings["num_classes"]
         self.strides = [8, 16, 32]
 
         self.grid_points = []
         self.grid_strides = []
         for stride in self.strides:
             grid_point = self._make_grid_point(
-                (int(res/stride),
-                 int(res/stride)),
+                (int(self.mod_res/stride),
+                 int(self.mod_res/stride)),
                 stride,
             )
             self.grid_points.extend(grid_point)
@@ -165,7 +164,7 @@ class nanodet():
 
 class yolox():
 
-    def __init__(self, dir, res, num_classes=80):
+    def __init__(self, dir, settings):
         providers = ['CPUExecutionProvider']
         sess_options = rt.SessionOptions()  # https://onnxruntime.ai/docs/performance/tune-performance.html
         sess_options.intra_op_num_threads = 1
@@ -174,16 +173,16 @@ class yolox():
         self.session = rt.InferenceSession(dir, sess_options=sess_options, providers=providers)
         self.outname = [i.name for i in self.session.get_outputs()] 
         self.inname = [i.name for i in self.session.get_inputs()]
-        self.mod_res = res
-        self.num_classes = num_classes
+        self.mod_res = settings["resolution"]
+        self.num_classes = settings["num_classes"]
         self.strides = [8, 16, 32]
 
         self.grid_points = []
         self.grid_strides = []
         for stride in self.strides:
             grid_point = self._make_grid_point(
-                (int(res/stride),
-                 int(res/stride)),
+                (int(self.mod_res/stride),
+                 int(self.mod_res/stride)),
                 stride,
             )
             self.grid_points.extend(grid_point)
