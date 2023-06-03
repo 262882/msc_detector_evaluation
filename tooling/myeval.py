@@ -13,7 +13,7 @@ from pycocotools.cocoeval import COCOeval
 sys.path.append(os.path.join(sys.path[0], '../tooling/'))
 from myloader import CocoDetection
 
-def myevaluatemodels(evaluate_models, dataset_dirs, result_dir, display=False):
+def myevaluatemodels(evaluate_models, dataset_dirs, result_dir, display=False, verbose=False):
     for eval_model in evaluate_models:
             
         model_name = eval_model[0][eval_model[0].rfind('/')+1:eval_model[0].rfind('.')]
@@ -31,6 +31,10 @@ def myevaluatemodels(evaluate_models, dataset_dirs, result_dir, display=False):
 
             preds = []
             for idx, id in enumerate(dataset.ids):
+
+                if verbose:
+                    print(model_name, "dataset:", set_no, "- Processing image:", idx, "of", len(dataset.ids))
+
                 img, target = dataset[idx]
                 frame = cv2.cvtColor(np.asarray(img), cv2.COLOR_BGR2RGB)
 
