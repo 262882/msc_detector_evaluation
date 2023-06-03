@@ -17,23 +17,20 @@ from pycocotools.cocoeval import COCOeval
 sys.path.append(os.path.join(sys.path[0], '../tooling/'))
 from myloader import CocoDetection
 from mymodels import cascade_classifier
-display = True
+display = False
 
 models_list = glob.glob(os.path.join('../models/vj/','*.xml'))
-
 evaluate_models = [[model, cascade_classifier, 0] for model in models_list] 
 
-'''
 dataset_dirs = [
-    "../data/coco_validation_sml_01_False_drill/",  # No match, no occl
-    "../data/coco_validation_sml_01_False_matchdrill/",  # No occl
-    "../data/coco_validation_sml_01_FalseTrue_matchdrill/",  # Full
+    "../data/coco_train_sml_01_False_matchdrill/",
+    "../data/coco_validation_sml_01_False_matchdrill/",
 ]
 
 for eval_model in evaluate_models:
         
     model_name = eval_model[0][eval_model[0].rfind('/')+1:eval_model[0].rfind('.')]
-    resFile = "../results/" + model_name + "_stats.json"
+    resFile = "../results/vj_train" + model_name + "_stats.json"
     model = eval_model[1](eval_model[0], eval_model[2])
 
     stats = {}
@@ -124,4 +121,3 @@ for eval_model in evaluate_models:
 
     with open(resFile, 'w') as out_file:
         json.dump(detector_res, out_file)
-'''
