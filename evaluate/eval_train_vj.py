@@ -17,10 +17,6 @@ verbose = True
 models_list = glob.glob(os.path.join('../models/vj/trash/','*.xml'))
 evaluate_models = [[model, cascade_classifier,  {"scale_factor":1.1, "min_neighbours":3}] for model in models_list] 
 
-#evaluate_models = [
-#    ['../models/ballcascade_8_0.25.xml', cascade_classifier, {"scale_factor":1.1, "min_neighbours":1}],
-#]
-
 dataset_dirs = [
     "../data/coco_train_sml_01_False_matchdrill/",
     "../data/coco_validation_sml_01_False_matchdrill/",
