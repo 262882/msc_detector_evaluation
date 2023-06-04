@@ -14,7 +14,7 @@ from mymodels import cascade_classifier
 display = False
 verbose = True
 
-models_list = glob.glob(os.path.join('../models/vj/trash/','*.xml'))
+models_list = glob.glob(os.path.join('../models/vj/','*.xml'))
 evaluate_models = [[model, cascade_classifier,  {"scale_factor":1.1, "min_neighbours":3}] for model in models_list] 
 
 dataset_dirs = [

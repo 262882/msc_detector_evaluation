@@ -1,0 +1,1 @@
+{"ballcascade_8_0.45": {"coco_train_sml_01_False_matchdrill": {"AP_{@[IoU=0.50:0.95]-all}": 0.0013201320132013201, "AP_{@[IoU=0.50:0.95]-small}": 0.0, "AP_{@[IoU=0.50:0.95]-medium}": 0.0013201320132013201}}}
