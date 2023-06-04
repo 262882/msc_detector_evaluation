@@ -40,6 +40,7 @@ def myevaluatemodels(evaluate_models, dataset_dirs, result_dir, display=False, v
 
             preds = []
             last_time = time.perf_counter()
+            start_time = time.perf_counter()  
 
             for idx, id in enumerate(dataset.ids):
 
@@ -54,7 +55,6 @@ def myevaluatemodels(evaluate_models, dataset_dirs, result_dir, display=False, v
                 last_time = time.perf_counter()      
 
                 img, target = dataset[idx]
-                frame = cv2.cvtColor(np.asarray(img), cv2.COLOR_BGR2RGB)
 
                 # Prepare prediction 
                 detections = model.forward(img)
@@ -70,6 +70,7 @@ def myevaluatemodels(evaluate_models, dataset_dirs, result_dir, display=False, v
                             labels = 37  # Map prediction to coco
 
                             if (display):
+                                frame = cv2.cvtColor(np.asarray(img), cv2.COLOR_BGR2RGB)
                                 frame = cv2.rectangle(frame, (int(boxes[0]), int(boxes[1])), (int(boxes[2]), int(boxes[3])),(0, 255, 0), 2)
                             pass
 
@@ -97,7 +98,9 @@ def myevaluatemodels(evaluate_models, dataset_dirs, result_dir, display=False, v
                     if cv2.waitKey(0) & 0xFF == ord('q'):
                         x_loop_must_break = True
                         break
-                                
+
+            end_time = time.perf_counter()  
+
             if x_loop_must_break:
                 break
                     
@@ -119,10 +122,15 @@ def myevaluatemodels(evaluate_models, dataset_dirs, result_dir, display=False, v
             print(set_name)
             cocoEval.summarize()
 
+            num_images = len(dataset.ids)
+            test_duration = end_time - start_time
+            latency = num_images/test_duration
+
             stat_sum = {
                 'AP_{@[IoU=0.50:0.95]-all}': cocoEval.stats[0],
                 'AP_{@[IoU=0.50:0.95]-small}': cocoEval.stats[3],
                 'AP_{@[IoU=0.50:0.95]-medium}': cocoEval.stats[4],
+                'latency': latency,
             }
             stats[set_name] = stat_sum
 
