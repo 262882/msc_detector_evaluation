@@ -17,7 +17,7 @@ evaluate_models = [
     ['../models/nanodet-plus-m_416.onnx', nanodet, {"resolution":416, "num_classes":80}],
     ['../models/yolox_nano.onnx', yolox, {"resolution":416, "num_classes":80}],
     ['../models/finedet_map93_416.onnx', nanodet, {"resolution":416, "num_classes":80}],
-    ['../models/ballcascade_8_0.25.xml', cascade_classifier, {"scale_factor":1.1, "min_neighbours":1}],
+    ['../models/ballcascade_10_0.35.xml', cascade_classifier, {"scale_factor":1.04, "min_neighbours":2}],
 ]
 
 dataset_dirs = [
