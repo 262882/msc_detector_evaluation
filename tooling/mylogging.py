@@ -8,7 +8,7 @@ def nanodet_parse(path, smooth_training=True):
     val_loss = []
     val_steps = []
 
-    smooth_samples = 5
+    smooth_samples = 20
 
     # Using readlines()
     file0 = open(path, 'r')
