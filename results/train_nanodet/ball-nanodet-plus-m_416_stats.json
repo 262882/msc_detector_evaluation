@@ -1,1 +1,1 @@
-{"ball-nanodet-plus-m_416": {"coco_validation_sml_01_False_matchdrill": {"AP_{@[IoU=0.50:0.95]-all}": 0.4875057046938886, "AP_{@[IoU=0.50:0.95]-small}": 0.3463761068951783, "AP_{@[IoU=0.50:0.95]-medium}": 0.9108837225538589, "latency": 19.490499195704086}}}
+{"ball-nanodet-plus-m_416": {"coco_validation_sml_01_False_matchdrill": {"AP_{@[IoU=0.50:0.95]-all}": 0.4875057046938886, "AP_{@[IoU=0.50:0.95]-small}": 0.3463761068951783, "AP_{@[IoU=0.50:0.95]-medium}": 0.9108837225538589, "latency": 31.1443252030719}}}
