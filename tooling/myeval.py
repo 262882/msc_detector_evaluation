@@ -55,6 +55,8 @@ def myevaluatemodels(evaluate_models, dataset_dirs, result_dir, display=False, v
                 last_time = time.perf_counter()      
 
                 img, target = dataset[idx]
+                if (display):
+                    frame = cv2.cvtColor(np.asarray(img), cv2.COLOR_BGR2RGB)
 
                 # Prepare prediction 
                 detections = model.forward(img)
@@ -70,7 +72,6 @@ def myevaluatemodels(evaluate_models, dataset_dirs, result_dir, display=False, v
                             labels = 37  # Map prediction to coco
 
                             if (display):
-                                frame = cv2.cvtColor(np.asarray(img), cv2.COLOR_BGR2RGB)
                                 frame = cv2.rectangle(frame, (int(boxes[0]), int(boxes[1])), (int(boxes[2]), int(boxes[3])),(0, 255, 0), 2)
                             pass
 
@@ -92,7 +93,7 @@ def myevaluatemodels(evaluate_models, dataset_dirs, result_dir, display=False, v
 
                 if (display):
                     # Display the resulting frame
-                    cv2.imshow('Frame',frame)
+                    cv2.imshow('Frame', frame)
 
                     # Press Q on keyboard to  exit
                     if cv2.waitKey(0) & 0xFF == ord('q'):
