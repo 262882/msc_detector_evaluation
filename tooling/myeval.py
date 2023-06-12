@@ -127,11 +127,16 @@ def myevaluatemodels(evaluate_models, dataset_dirs, result_dir, display=False, v
             test_duration = end_time - start_time
             latency = num_images/test_duration
 
+            model_size_mb = 0
+            if eval_model[0][-5:] == '.onnx':
+                model_size_mb = os.stat(eval_model[0]).st_size/(1024 * 1024)
+
             stat_sum = {
                 'AP_{@[IoU=0.50:0.95]-all}': cocoEval.stats[0],
                 'AP_{@[IoU=0.50:0.95]-small}': cocoEval.stats[3],
                 'AP_{@[IoU=0.50:0.95]-medium}': cocoEval.stats[4],
                 'latency': latency,
+                'model_size': model_size_mb
             }
             stats[set_name] = stat_sum
 
