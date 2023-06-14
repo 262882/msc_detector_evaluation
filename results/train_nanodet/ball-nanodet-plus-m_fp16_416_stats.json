@@ -1,0 +1,1 @@
+{"ball-nanodet-plus-m_fp16_416": {"coco_validation_sml_01_False_matchdrill": {"AP_{@[IoU=0.50:0.95]-all}": 0.4876671855773289, "AP_{@[IoU=0.50:0.95]-small}": 0.34655896534449765, "AP_{@[IoU=0.50:0.95]-medium}": 0.9109360165156495, "latency": 15.315674516937053, "model_size": 3.1501522064208984}}}

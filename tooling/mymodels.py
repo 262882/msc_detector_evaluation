@@ -69,6 +69,9 @@ class nanodet():
         self.inname = [i.name for i in self.session.get_inputs()]
         self.mod_res = settings["resolution"]
         self.num_classes = settings["num_classes"]
+        self.dtype = np.float32
+        if "fp16" in dir:
+            self.dtype = np.float16     
         self.strides = [8, 16, 32]
 
         self.grid_points = []
@@ -149,7 +152,7 @@ class nanodet():
         blob = cv2.dnn.blobFromImage(norm_img, 
                         size = (self.mod_res, self.mod_res),
                         swapRB=False, crop=False) 
-        inp = {self.inname[0]:blob}
+        inp = {self.inname[0]:blob.astype(self.dtype)}
         layer_output = self.session.run(self.outname, inp)[0][0]  
 
         detections_pre = self._post_process(layer_output)   

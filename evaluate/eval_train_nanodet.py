@@ -12,7 +12,7 @@ from myeval import myevaluatemodels
 from mymodels import nanodet
 
 display = False
-verbose = True
+verbose = False
 
 models_list = glob.glob(os.path.join('../models/nanodet/','*.onnx'))
 evaluate_models = [[model, nanodet, {"resolution":int(model[-8:-5]), "num_classes":80}] for model in models_list] 
