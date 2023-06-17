@@ -165,6 +165,65 @@ class nanodet():
             
         return preds
 
+class yolov4tiny():
+
+    def __init__(self, dir, settings):
+        providers = ['CPUExecutionProvider']
+        sess_options = rt.SessionOptions()  # https://onnxruntime.ai/docs/performance/tune-performance.html
+        sess_options.intra_op_num_threads = 1
+        sess_options.execution_mode = rt.ExecutionMode.ORT_SEQUENTIAL
+
+        self.session = rt.InferenceSession(dir, sess_options=sess_options, providers=providers)
+        self.outname = [i.name for i in self.session.get_outputs()] 
+        self.inname = [i.name for i in self.session.get_inputs()]
+        self.mod_res = settings["resolution"]
+        self.num_classes = settings["num_classes"]
+        self.dtype = np.float32
+
+    def _normalize(self, in_img): 
+        out_img = np.asarray(in_img).astype(self.dtype) / 255
+        return out_img
+
+    def _post_process(self, predict_results, score_thr=0.1, class_ind = 32):
+
+        preds = []
+        class_scores = predict_results[1][0]
+        bbox_predicts = predict_results[0][0,:,0]
+
+        max_inds = np.argmax(class_scores[:,class_ind])  # Assume only one instance
+        if class_scores[max_inds, class_ind] > score_thr:
+            pred_inds = [[int(max_inds)]]
+        else:
+            pred_inds = []
+        #pred_inds = np.argwhere(class_scores[:, class_ind] > score_thr)  # Process multiple instances
+
+        if len(pred_inds)>0:
+            for ind in pred_inds:
+                ind = ind[0]
+                x1,y1,x2,y2 = bbox_predicts[ind]
+                preds.append([x1, y1, x2, y2, class_scores[ind, class_ind], class_ind])
+
+        return preds
+
+    def forward(self, img):
+        preds = []
+        norm_img = self._normalize(img)
+        blob = cv2.dnn.blobFromImage(norm_img, 
+                        size = (self.mod_res, self.mod_res),
+                        swapRB=True, crop=False) 
+        inp = {self.inname[0]:blob.astype(self.dtype)}
+        layer_output = self.session.run(self.outname, inp)  # ([batch, num_boxes, 1, [x1, y1, x2, y2]], [batch, num_boxes, num_classes])  
+        detections_pre = self._post_process(layer_output)  
+
+        for detection in detections_pre:
+
+            x1, y1, x2, y2 = np.array(detection[:4])*norm_img.shape[0]
+            score = detection[-2]
+            ind = detection[-1]
+            preds.append([int(x1), int(y1), int(x2), int(y2), score, ind])
+            
+        return preds
+
 class yolox():
 
     def __init__(self, dir, settings):
