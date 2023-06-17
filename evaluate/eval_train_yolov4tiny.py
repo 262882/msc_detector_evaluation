@@ -8,7 +8,7 @@ import sys
 
 sys.path.append(os.path.join(sys.path[0], '../tooling/'))
 from myeval import myevaluatemodels
-from mymodels import nanodet, yolov4tiny
+from mymodels import yolov4tiny
 
 display = False
 verbose = False
