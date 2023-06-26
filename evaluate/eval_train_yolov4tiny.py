@@ -21,9 +21,7 @@ evaluate_models = [
 ]
 
 dataset_dirs = [
-    "../data/coco_test_sml_01_False_drill/",  # No match, no occl
-    "../data/coco_test_sml_01_False_matchdrill/",  # No occl
-    "../data/coco_test_sml_01_FalseTrue_matchdrill/",  # Full
+    "../data/coco_validation_sml_01_False_matchdrill/",
 ]
 
 result_dir = "../results/train_yolov4tiny/"
