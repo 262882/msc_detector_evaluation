@@ -190,8 +190,14 @@ class yolov4tiny():
         class_scores = predict_results[1][0]
         bbox_predicts = predict_results[0][0,:,0]
 
-        max_inds = np.argmax(class_scores[:,class_ind])  # Assume only one instance
-        if class_scores[max_inds, class_ind] > score_thr:
+        if self.num_classes == 1:
+            model_ind = 0
+        
+        elif self.num_classes == 80:
+            model_ind = class_ind  
+
+        max_inds = np.argmax(class_scores[:, model_ind])  # Assume only one instance
+        if class_scores[max_inds, model_ind] > score_thr:
             pred_inds = [[int(max_inds)]]
         else:
             pred_inds = []
@@ -201,7 +207,7 @@ class yolov4tiny():
             for ind in pred_inds:
                 ind = ind[0]
                 x1,y1,x2,y2 = bbox_predicts[ind]
-                preds.append([x1, y1, x2, y2, class_scores[ind, class_ind], class_ind])
+                preds.append([x1, y1, x2, y2, class_scores[ind, model_ind], class_ind])
 
         return preds
 

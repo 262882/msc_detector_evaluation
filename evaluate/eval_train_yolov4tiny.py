@@ -14,7 +14,10 @@ display = False
 verbose = False
 
 evaluate_models = [
-    ['../models/pretrained_yolov4-tiny.onnx', yolov4tiny, {"resolution":416, "num_classes":80}],
+    ['../models/yolov4-tiny/pretrained_yolov4-tiny.onnx', yolov4tiny, {"resolution":416, "num_classes":80}],
+    #['../models/yolov4-tiny/yolov4-tiny-ball_320.onnx', yolov4tiny, {"resolution":320, "num_classes":1}],
+    ['../models/yolov4-tiny/yolov4-tiny-ball_416.onnx', yolov4tiny, {"resolution":416, "num_classes":1}],
+    #['../models/yolov4-tiny/yolov4-tiny-ball_480.onnx', yolov4tiny, {"resolution":480, "num_classes":1}],
 ]
 
 dataset_dirs = [

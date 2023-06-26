@@ -8,7 +8,7 @@ import sys
 
 sys.path.append(os.path.join(sys.path[0], '../tooling/'))
 from myeval import myevaluatemodels
-from mymodels import nanodet, pretrained_yolov5s, cascade_classifier, yolox
+from mymodels import nanodet, pretrained_yolov5s, cascade_classifier, yolov4tiny
 
 display = False
 
@@ -17,6 +17,8 @@ evaluate_models = [
     ['../models/pretrained_nanodet-plus-m_416.onnx', nanodet, {"resolution":416, "num_classes":80}],
     ['../models/ball-nanodet-plus-m_416.onnx', nanodet, {"resolution":416, "num_classes":80}],
     ['../models/ballcascade_10_0.35.xml', cascade_classifier, {"scale_factor":1.04, "min_neighbours":2}],
+    ['../models/pretrained_yolov4-tiny.onnx', yolov4tiny, {"resolution":416, "num_classes":80}],
+    ['../models/yolov4-tiny-ball_416.onnx', yolov4tiny, {"resolution":416, "num_classes":1}],
 ]
 
 dataset_dirs = [
