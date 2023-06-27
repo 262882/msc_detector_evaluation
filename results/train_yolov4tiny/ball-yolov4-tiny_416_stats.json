@@ -1,1 +1,1 @@
-{"ball-yolov4-tiny_416": {"coco_validation_sml_01_False_matchdrill": {"AP_{@[IoU=0.50:0.95]-all}": 0.6767608224536042, "AP_{@[IoU=0.50:0.95]-small}": 0.6226695929148518, "AP_{@[IoU=0.50:0.95]-medium}": 0.8523042164895694, "latency": 14.367000823735866, "model_size": 22.47623920440674}}}
+{"ball-yolov4-tiny_416": {"coco_validation_sml_01_False_matchdrill": {"AP_{@[IoU=0.50:0.95]-all}": 0.6805791982239348, "AP_{@[IoU=0.50:0.95]-small}": 0.628143374265, "AP_{@[IoU=0.50:0.95]-medium}": 0.8566055527442193, "latency": 14.454276325378588, "model_size": 22.47623920440674}}}
