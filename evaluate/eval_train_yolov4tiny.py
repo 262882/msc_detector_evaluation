@@ -15,6 +15,9 @@ verbose = False
 
 evaluate_models = [
     ['../models/yolov4-tiny/pretrained_yolov4-tiny.onnx', yolov4tiny, {"resolution":416, "num_classes":80}],
+    ['../models/yolov4-tiny/ball-yolov4-tiny_160.onnx', yolov4tiny, {"resolution":160, "num_classes":1}],
+    ['../models/yolov4-tiny/ball-yolov4-tiny_192.onnx', yolov4tiny, {"resolution":192, "num_classes":1}],
+    ['../models/yolov4-tiny/ball-yolov4-tiny_256.onnx', yolov4tiny, {"resolution":256, "num_classes":1}],
     ['../models/yolov4-tiny/ball-yolov4-tiny_320.onnx', yolov4tiny, {"resolution":320, "num_classes":1}],
     ['../models/yolov4-tiny/ball-yolov4-tiny_416.onnx', yolov4tiny, {"resolution":416, "num_classes":1}],
     ['../models/yolov4-tiny/ball-yolov4-tiny_480.onnx', yolov4tiny, {"resolution":480, "num_classes":1}],

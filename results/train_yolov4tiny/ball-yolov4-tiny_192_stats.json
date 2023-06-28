@@ -1,0 +1,1 @@
+{"ball-yolov4-tiny_192": {"coco_validation_sml_01_False_matchdrill": {"AP_{@[IoU=0.50:0.95]-all}": 0.5090250364467932, "AP_{@[IoU=0.50:0.95]-small}": 0.4268181127991662, "AP_{@[IoU=0.50:0.95]-medium}": 0.773647197382487, "latency": 52.43113944112057, "model_size": 22.461018562316895}}}
