@@ -5,7 +5,7 @@ Parse logging
 def yolov4tiny_parse(path, smooth_training=True):
     train_loss = []
     train_steps = []
-    val_loss = []
+    val_score = []
     val_steps = []
 
     smooth_samples = 20
@@ -20,7 +20,7 @@ def yolov4tiny_parse(path, smooth_training=True):
         if 'mean_average_precision' in line:
             val_count = val_count + 100
             val_steps.append(int(val_count))
-            val_loss.append(float(line[38:]))
+            val_score.append(float(line[38:]))
 
         elif 'avg loss' in line:
             train_steps.append(int(line[1:line.find(':')]))
@@ -36,13 +36,13 @@ def yolov4tiny_parse(path, smooth_training=True):
     train_steps = train_steps[:-1]
     train_loss = train_loss[:-1]
 
-    return train_steps, train_loss, val_steps, val_loss
+    return train_steps, train_loss, val_steps, val_score
     
 
 def nanodet_parse(path, smooth_training=True):
     train_loss = []
     train_steps = []
-    val_loss = []
+    val_score = []
     val_steps = []
 
     smooth_samples = 20
@@ -58,17 +58,18 @@ def nanodet_parse(path, smooth_training=True):
             if 'Train' in line:
                 train_steps.append(val_extract(line, 'Epoch', '/'))
                 train_loss.append(val_extract(line, 'loss_bbox:', '|'))
+
+        elif 'Val_metrics' in line:
             
-            elif 'Val' in line:
-                val_steps.append(val_extract(line, 'Epoch', '/'))
-                val_loss.append(val_extract(line, 'loss_bbox:', '|'))
+            val_steps.append(train_steps[-1])
+            val_score.append(val_extract(line, "'mAP':", ','))
 
     if smooth_training == True:
         
         train_steps = [train_step for train_step in train_steps if train_step%smooth_samples==0]
         train_loss = [sum(train_loss[int(train_step-1):int(train_step-1)+smooth_samples])/smooth_samples for train_step in train_steps]
 
-    return train_steps, train_loss, val_steps, val_loss
+    return train_steps, train_loss, val_steps, val_score
     
 def val_extract(line, key, end):
     idx = line.index(key)
