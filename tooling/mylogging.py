@@ -62,7 +62,7 @@ def nanodet_parse(path, smooth_training=True):
         elif 'Val_metrics' in line:
             
             val_steps.append(train_steps[-1])
-            val_score.append(val_extract(line, "'mAP':", ','))
+            val_score.append(val_extract(line, "'AP_50':", ','))
 
     if smooth_training == True:
         
